@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO优化：标题包含核心关键词 -->
+    <title>flysheep资源避难所-首页导航</title>
+    <!-- 搜索引擎描述 -->
+    <meta name="description" content="一个免费的二次元风格下载站 收录steam epic 单机资源 switch游戏 ChatGPT">
+    <!-- 关键词设置 -->
+    <meta name="keywords" content="资源避难所,flysheep,资源避难所导航页">
+
+    <style>
+        /* 保持原有样式不变 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Comic Sans MS", "Bubblegum Sans", cursive;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* 开场动画层 */
+        #intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .intro-char {
+            position: absolute;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+        
+        /* 细线光圈效果 - 0.1毫米左右的细线 */
+        .light-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 0.01px solid white; /* 约等于0.1毫米的细线 */
+            background: transparent;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            z-index: 52;
+        }
+        
+        @keyframes circlePulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(50);
+                opacity: 0;
+            }
+        }
+        
+        /* 激光效果 */
+        .laser {
+            position: absolute;
+            background: white;
+            box-shadow: 0 0 20px 8px rgba(255, 255, 255, 0.9), 
+                        0 0 30px 12px rgba(255, 255, 255, 0.5);
+            transform-origin: center;
+            opacity: 0;
+            z-index: 51;
+            height: 3px;
+            top: 50%;
+            left: 0;
+        }
+        
+        /* 激光残影效果 */
+        .laser-ghost {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.5);
+            transform-origin: center;
+            z-index: 50;
+            height: 3px;
+            top: 50%;
+            left: 0;
+        }
+        
+        /* 从中心线向外展开的白屏过渡 */
+        #white-flash {
+            position: fixed;
+            top: 0;
+            left: 50%; /* 从水平中心线开始 */
+            width: 0;
+            height: 100%;
+            background-color: white;
+            z-index: 53;
+            transform: translateX(-50%); /* 保持水平居中 */
+        }
+        
+        @keyframes expandFromCenterLine {
+            0% {
+                width: 0;
+                opacity: 1;
+            }
+            70% {
+                width: 100%;
+                opacity: 1;
+            }
+            100% {
+                width: 100%;
+                opacity: 0;
+            }
+        }
+        
+        /* 动态背景层 */
+        #dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: none;
+        }
+        
+        #bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        #petals-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .petal {
+            position: absolute;
+            background-color: #ffccd5;
+            border-radius: 50% 0 50% 0;
+            opacity: 0.7;
+        }
+        
+        /* 主内容样式 */
+        #main-content {
+            position: relative;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+        }
+        
+        .title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: bold;
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .title span {
+            color: #FF6B9B;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px; /* 增加按钮容器底部间距，为搜索框留出空间 */
+        }
+        
+        @media (min-width: 768px) {
+            .buttons-container {
+                flex-direction: row;
+                gap: 20px;
+            }
+        }
+        
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transform: transition;
+            transition: all 0.3s ease-out;
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: bold;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0.1;
+            transform: translateX(-100%) skewX(12deg);
+            transition: transform 0.7s;
+        }
+        
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .primary-btn {
+            background-color: #FF6B9B;
+            box-shadow: 0 0 15px rgba(255, 107, 155, 0.5);
+        }
+        
+        .secondary-btn {
+            background-color: #66D2A0;
+            box-shadow: 0 0 15px rgba(102, 210, 160, 0.5);
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            margin: 0 auto; /* 确保搜索框在页面中水平居中 */
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: none;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            /* 半透明磨砂质感 */
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .search-box:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .search-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .decor {
+            position: absolute;
+            color: #FFD166;
+            opacity: 0.7;
+        }
+        
+        .star {
+            bottom: -40px;
+            left: -40px;
+            font-size: 100px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .heart {
+            top: -20px;
+            right: -20px;
+            font-size: 80px;
+            color: #FF6B9B;
+            animation: float 8s ease-in-out infinite 1s;
+        }
+        
+        /* 动画定义 */
+        @keyframes fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0.4;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes laserHorizontal {
+            0% { width: 0; opacity: 1; }
+            100% { width: 100%; opacity: 1; }
+        }
+        
+        @keyframes rotateLaser {
+            0% { transform: rotate(0deg); }
+            70% { transform: rotate(95deg); }
+            100% { transform: rotate(90deg); }
+        }
+        
+        @keyframes ghostFade {
+            0% { opacity: 0.6; width: 100%; transform: rotate(0deg); }
+            100% { opacity: 0; width: 100%; transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 开场动画层 -->
+    <div id="intro"></div>
+    
+    <!-- 激光效果元素（单道激光） -->
+    <div id="laser" class="laser"></div>
+    <div id="laser-ghost-1" class="laser-ghost"></div>
+    <div id="laser-ghost-2" class="laser-ghost"></div>
+    
+    <!-- 从中心线向外展开的白屏过渡 -->
+    <div id="white-flash"></div>
+    
+    <!-- 动态背景层 -->
+    <div id="dynamic-bg">
+        <!-- 优化图片alt标签，包含关键词 -->
+        <img id="bg-image" src="https://s2.loli.net/2025/08/16/bIBaWRncSL6Y75l.jpg" alt="flysheep资源避难所的二次元风格背景图，展示二次元风景和少女">
+        <div id="petals-container"></div>
+    </div>
+    
+    <!-- 主内容层 -->
+    <div id="main-content">
+        <!-- H1标签包含核心关键词，优化SEO -->
+        <h1 class="title">
+            <span>flysheep</span>资源避难所
+        </h1>
+        
+        <div class="buttons-container">
+            <a href="https://www.baidu.com/link?url=-rqjyWTkt4furb9AuUS-YxX3BrK1A6DxZW53PlPD3Mnh9e4bB1QQONszunrJyUT_&wd=&eqid=ca8ecc6e0096b0500000000468c70ab9" target="_blank" rel="noopener noreferrer" class="btn primary-btn">
+                👑 flysheep资源避难所
+            </a>
+            
+            <a href="https://6ljx.f2z.cn/pGVY43" target="_blank" rel="noopener noreferrer" class="btn secondary-btn">
+                备用站
+            </a>
+        </div>
+        
+        <!-- 搜索框 -->
+        <div class="search-container">
+            <form id="search-form">
+                <input type="text" class="search-box" placeholder="请搜索关键词 如&quot;东方&quot;" name="search-term">
+                <button type="submit" class="search-btn">🔍</button>
+            </form>
+        </div>
+        
+        <div class="decor star">★</div>
+        <div class="decor heart">❤</div>
+    </div>
+    
+    <script>
+        // 创建细线光圈效果 - 0.1毫米左右的线条
+        function createLightCircle(x, y) {
+            const intro = document.getElementById('intro');
+            
+            // 创建单一光圈
+            const circle = document.createElement('div');
+            circle.className = 'light-circle';
+            
+            // 设置光圈初始大小
+            circle.style.width = '20px';
+            circle.style.height = '20px';
+            circle.style.left = x + 'px';
+            circle.style.top = y + 'px';
+            
+            // 动画时长设置为0.3秒
+            const duration = 0.3;
+            circle.style.animation = `circlePulse ${duration}s ease-out forwards`;
+            intro.appendChild(circle);
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                circle.remove();
+            }, duration * 1000);
+        }
+        
+        // 文字闪入效果和动画
+        document.addEventListener('DOMContentLoaded', function() {
+            var intro = document.getElementById('intro');
+            var laser = document.getElementById('laser');
+            var laserGhost1 = document.getElementById('laser-ghost-1');
+            var laserGhost2 = document.getElementById('laser-ghost-2');
+            var whiteFlash = document.getElementById('white-flash');
+            var dynamicBg = document.getElementById('dynamic-bg');
+            var mainContent = document.getElementById('main-content');
+            // 开场文字包含核心关键词
+            var text = "flysheep资源避难所";
+            var delay = 0;
+            
+            // 创建随机闪烁的文字
+            for (var i = 0; i < text.length; i++) {
+                (function(i) {
+                    var char = document.createElement('span');
+                    char.className = 'intro-char';
+                    char.textContent = text[i];
+                    
+                    // 随机位置
+                    const leftPos = Math.random() * 80 + 10;
+                    const topPos = Math.random() * 80 + 10;
+                    char.style.left = leftPos + '%';
+                    char.style.top = topPos + '%';
+                    
+                    intro.appendChild(char);
+                    
+                    // 计算文字中心点坐标（用于光圈效果）
+                    setTimeout(function() {
+                        // 显示文字
+                        char.style.opacity = '1';
+                        
+                        // 获取文字位置并计算中心点
+                        const charRect = char.getBoundingClientRect();
+                        const centerX = charRect.left + charRect.width / 2;
+                        const centerY = charRect.top + charRect.height / 2;
+                        
+                        // 创建光圈效果
+                        createLightCircle(centerX, centerY);
+                        
+                        // 隐藏文字
+                        setTimeout(function() {
+                            char.style.opacity = '0';
+                        }, 80);
+                    }, delay);
+                    
+                    delay += 50;
+                })(i);
+            }
+            
+            // 文字动画结束后立即执行激光效果
+            setTimeout(function() {
+                // 水平激光效果 - 快速贯穿屏幕
+                laser.style.animation = 'laserHorizontal 0.2s forwards';
+                laser.style.opacity = '1';
+                
+                // 激光完成后旋转
+                setTimeout(function() {
+                    // 创建激光残影
+                    laserGhost1.style.width = '100%';
+                    laserGhost1.style.opacity = '0.4';
+                    laserGhost1.style.animation = 'ghostFade 0.4s forwards';
+                    
+                    laserGhost2.style.width = '100%';
+                    laserGhost2.style.opacity = '0.2';
+                    laserGhost2.style.animation = 'ghostFade 0.3s 0.1s forwards';
+                    
+                    // 激光旋转90度动画
+                    laser.style.transformOrigin = 'center';
+                    laser.style.animation = 'rotateLaser 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards';
+                    
+                    // 旋转完成后显示从中心线展开的白屏过渡
+                    setTimeout(function() {
+                        // 显示背景和主内容（但保持透明）
+                        dynamicBg.style.display = 'block';
+                        mainContent.style.display = 'block';
+                        
+                        // 执行白屏展开动画
+                        whiteFlash.style.display = 'block';
+                        whiteFlash.style.animation = 'expandFromCenterLine 0.8s forwards';
+                        
+                        // 白屏过渡动画进行中，同步显示内容
+                        setTimeout(function() {
+                            // 隐藏开场层和激光元素
+                            intro.style.display = 'none';
+                            laser.style.display = 'none';
+                            laserGhost1.style.display = 'none';
+                            laserGhost2.style.display = 'none';
+                            whiteFlash.style.display = 'none';
+                            
+                            // 开始生成樱花花瓣
+                            createPetals();
+                            
+                            // 显示主内容（带动画）
+                            mainContent.style.animation = 'fadeIn 1.5s ease-out';
+                        }, 600); // 在白屏动画即将结束时同步显示内容
+                    }, 300);
+                }, 200);
+            }, delay);
+        });
+        
+        // 创建飘落的樱花瓣
+        function createPetals() {
+            var container = document.getElementById('petals-container');
+            var width = container.offsetWidth;
+            var height = container.offsetHeight;
+            
+            // 创建50个花瓣
+            for (var i = 0; i < 50; i++) {
+                setTimeout(function() {
+                    var petal = document.createElement('div');
+                    petal.className = 'petal';
+                    
+                    // 随机大小
+                    var size = Math.random() * 10 + 5;
+                    petal.style.width = size + 'px';
+                    petal.style.height = size + 'px';
+                    
+                    // 随机位置
+                    petal.style.left = Math.random() * width + 'px';
+                    petal.style.top = '-' + size + 'px';
+                    
+                    // 随机旋转
+                    petal.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                    
+                    // 随机动画时长
+                    var duration = Math.random() * 10 + 10;
+                    petal.style.animation = 'fall ' + duration + 's linear infinite';
+                    
+                    container.appendChild(petal);
+                    
+                    // 花瓣落地后移除
+                    setTimeout(function() {
+                        petal.remove();
+                    }, duration * 1000);
+                }, i * 300);
+            }
+            
+            // 循环生成花瓣
+            setInterval(function() {
+                var petal = document.createElement('div');
+                petal.className = 'petal';
+                var size = Math.random() * 10 + 5;
+                petal.style.width = size + 'px';
+                petal.style.height = size + 'px';
+                petal.style.left = Math.random() * width + 'px';
+                petal.style.top = '-' + size + 'px';
+                petal.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                var duration = Math.random() * 10 + 10;
+                petal.style.animation = 'fall ' + duration + 's linear infinite';
+                container.appendChild(petal);
+                
+                setTimeout(function() {
+                    petal.remove();
+                }, duration * 1000);
+            }, 1000);
+        }
+        
+        // 搜索功能实现
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // 阻止表单默认提交行为
+            const searchTerm = document.querySelector('input[name="search-term"]').value.trim();
+            
+            if (searchTerm) {
+                // 跳转到搜索结果页面
+                window.location.href = `https://www.flysheep6.com/?s=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+    </script>
+</body>
+</html>
+    
